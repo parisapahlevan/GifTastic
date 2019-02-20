@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>GifTastic</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+  <button data-search="Joy">Joy</button>
+  <button data-search="Sadness">Sadness</button>
+  <button data-search="Fear">Fear</button>
+  <button data-search="Anger">Anger</button>
+  <button data-search="Disgust">Disgust</button>
+
+  <div id="GifArea"></div>
+  <script type="text/javascript">
+  $("button").on("click", function(){
+    var x = $(this).data("search");
+    console.log(x)
+
+    var queryURL = "https://api.giphy.com/v1/gifs/search?q="+x+"&api_key=znILgqZNfPM8DemVg28yr2CMyL68dZP8&limit=10";
+    console.log(queryURL);
+$.ajax({
+  url:queryURL,
+  method: "GET",
+})
+  .done(function(response){
+    console.log(response);
+    for (let i = 0; i < response.data.length; i++)
+    $("body").prepend("<img src='"+response.data[i].images.downsized.url+"'>")
+
+  })
+  })
+  
+  </script>
+
+
+
+
+
+
+
+
+</body>  
+</html>
