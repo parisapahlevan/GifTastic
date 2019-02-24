@@ -1,47 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>GifTastic</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <style>
+            img {width: 100%; height: 222px; margin-top: 9px;}
+            .title-Container{text-align: center; padding: 31px;}
+            .header-Container{padding: 43px;}
+            .tags{ padding: 4px; margin:4px;background-color: pink;}
+            .input-box{background-color: pink;width: 100%; height: 40px;}
+            body{background-color : #ffc5c53b}
+            .myButtonStyle{width: 100%;}
+            .inputText{width: 100%; text-align:right}
+    </style>
 </head>
+
 <body>
-  <button data-search="Joy">Joy</button>
-  <button data-search="Sadness">Sadness</button>
-  <button data-search="Fear">Fear</button>
-  <button data-search="Anger">Anger</button>
-  <button data-search="Disgust">Disgust</button>
+    <div class="title-Container">
+        <h1>Winter is Comming, Yo!</h1>
+    </div>
+    <div class="header-Container container">
+            <div class="row">
+              <div class="col-sm">
+                <h4 class="inputText">How do you feel? Yo ! :</h4>
+              </div>
+              <div class="col-sm">
+                <input type="text" class="input-box" placeholder="Feel it ..." value=""/>
+              </div>
+              <div class="col-sm">
+                <button type="submit" class="btn btn-primary myButtonStyle" onclick="addTag()">SUBMIT</button>
+              </div>
+            </div>
+    </div>
+    <div class="tag-container">
+        <button class="tags" value="Joy"     onclick="makeApiCall(this.value)">Joy</button>
+        <button class="tags" value="Sadness" onclick="makeApiCall(this.value)">Sadness</button>
+        <button class="tags" value="Fear"    onclick="makeApiCall(this.value)">Fear</button>
+        <button class="tags" value="Anger"   onclick="makeApiCall(this.value)">Anger</button>
+        <button class="tags" value="Disgust" onclick="makeApiCall(this.value)">Disgust</button>
+    </div>
+    <div class="gifs-container">  
+            <div id="firstRow" class="row">
+            </div>
+            <div id="secondRow" class="row">
+            </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        
+        var emotions = [];
 
-  <div id="GifArea"></div>
-  <script type="text/javascript">
-  $("button").on("click", function(){
-    var x = $(this).data("search");
-    console.log(x)
+        function makeApiCall(feeling){
+                $( "#firstRow" ).empty();
+                $( "#secondRow" ).empty();
+                console.log("feeling : ", feeling)
+                var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + feeling + "&api_key=znILgqZNfPM8DemVg28yr2CMyL68dZP8&limit=10"
+                $.ajax({
+                    url: queryURL,
+                    method: "GET",
+                }).done(function (response) {
+                    for (let i = 0; i < response.data.length; i++) {
+                        if(i<5){
+                            $("#firstRow").prepend(`<div class="col"><img  id="gify-${i}" class="gifies" src='${response.data[i].images.downsized.url}' onclick="toggle(this.id)"></div>`)
+                        }else{
+                            $("#secondRow").prepend(`<div class="col"><img id="gify-${i}" class="gifies" src='${response.data[i].images.downsized.url}'onclick="toggle(this.id)" ></div>`)
+                        }
+                    }
+                })
+           
+        }
+        function renderButtons() {
+            $("#emotionsShown").empty();
+            for (var i = 0; i < emotions.length; i++) {
+                var emo = $("<button>");
+                emo.addClass("emotion");
+                emo.attr("data-name", emotions[i]);
+                emo.text(emotions[i]);
+                $("#emotionsShown").append(emo);
+            }
+        }
+        $("#emotionsShown").on("click", function (event) {
+            event.preventDefault();
+            var emotion = $("#emotion-input").val().trim();
+            movies.push(movie);
+            renderButtons();
+        });
+        renderButtons();
+        function toggle(id){
+            var src = $(`#${id}`).attr("src");
+            var splitted = src.split("_s.gif")
+            if(splitted.length !== 1)
+                $(`#${id}`).attr('src', src.replace('_s.gif', '.gif'));
+            else
+                $(`#${id}`).attr('src', src.replace('.gif', '_s.gif'));
+        }
+        function addTag(){
+            var inputValue = $(".input-box").val()
+            $(".tag-container").append(`<button class="tags" value="${inputValue}" onclick="makeApiCall(this.value)">${inputValue}</button>`)
+            console.log(" I am here ")
+            // API CALL 
+            makeApiCall(inputValue)
+        }
+    </script>
+</body>
 
-    var queryURL = "https://api.giphy.com/v1/gifs/search?q="+x+"&api_key=znILgqZNfPM8DemVg28yr2CMyL68dZP8&limit=10";
-    console.log(queryURL);
-$.ajax({
-  url:queryURL,
-  method: "GET",
-})
-  .done(function(response){
-    console.log(response);
-    for (let i = 0; i < response.data.length; i++)
-    $("body").prepend("<img src='"+response.data[i].images.downsized.url+"'>")
-
-  })
-  })
-  
-  </script>
-
-
-
-
-
-
-
-
-</body>  
 </html>
