@@ -1,5 +1,5 @@
 # Emotions GIPHY
-Using the GIPHY API to make a dynamic web page that populates with gifs Emotions!
+Application that uses the GIPHY API to make a dynamic web page that populates with gifs of your choice.
 created an array of strings, each one related to a topic that interests you. Save it to a variable called topics.
 
 I chose Emotions!
